@@ -85,7 +85,8 @@ const meta = moduleMeta('drainpipe')
 const columns = ["管段编号", "起点井号", "终点井号", "管径", "埋深", "管材", "敷设日期", "管段状态"]
 const actions = ["完成巡线", "安排清淤", "报废管段"]
 const statuses = ["待巡线", "运行正常", "待清淤", "已废弃"]
-const stats = [{"label": "运行正常管段", "value": 0}, {"label": "待清淤管段", "value": 0}, {"label": "待巡线管段", "value": 0}]
+
+
 
 const rows = ref<EntryRow[]>([])
 const total = ref(0)
@@ -98,6 +99,13 @@ const statusSummary = computed(() =>
     count: rows.value.filter((row) => String(row.status) === status).length,
   })),
 )
+
+// 统计卡片与下方状态汇总取同一份 rows：清淤联动改了管段状态后，两处数字保持一致。
+const stats = computed(() => [
+  { label: "运行正常管段", value: rows.value.filter((row) => String(row.status) === "运行正常").length },
+  { label: "待清淤管段", value: rows.value.filter((row) => String(row.status) === "待清淤").length },
+  { label: "待巡线管段", value: rows.value.filter((row) => String(row.status) === "待巡线").length },
+])
 
 function resetFilters() {
   filters.value = {}
